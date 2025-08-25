@@ -111,6 +111,17 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "env_logger",
+ "ezlog",
+ "log",
+ "time",
+]
+
+[[package]]
+name = "ezlog"
+version = "0.1.0"
+source = "git+https://github.com/EzYDark/ezLog-rs.git#863aca038166c4e96b57bc39959950fd96b15ca0"
+dependencies = [
+ "env_logger",
  "log",
  "time",
 ]

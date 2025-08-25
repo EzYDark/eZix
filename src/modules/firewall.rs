@@ -1,20 +1,30 @@
-use crate::{Module, ModuleBuilder, State};
+use crate::Funcs;
 
-#[derive(Clone, Debug, Default)]
-pub struct FirewallConfig {
-    pub enable: bool,
-    pub allowed_ports: Vec<u16>,
+pub struct Firewall {
+    pub enabled: bool,
+    pub ports: Vec<u16>,
 }
 
-pub fn build(config: FirewallConfig) -> Module {
-    ModuleBuilder::new()
-        .set_enable_fn(move |s: &mut State| {
-            log::info!(
-                "Configuring firewall, allowing ports: {:?}",
-                config.allowed_ports
-            );
-            // In a real implementation, this would execute firewall commands.
-            s.enabled = true;
-        })
-        .build()
+impl Default for Firewall {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            ports: Vec::new(),
+        }
+    }
+}
+
+impl Funcs for Firewall {
+    fn name(&self) -> &'static str {
+        "firewall"
+    }
+    fn enable(&self) {
+        log::debug!("Firewall enabled");
+    }
+    fn disable(&self) {
+        log::debug!("Firewall disabled");
+    }
+    fn is_enabled(&self) -> bool {
+        self.enabled
+    }
 }

@@ -1,26 +1,30 @@
-use crate::{Module, ModuleBuilder, State};
+use crate::Funcs;
 
-#[derive(Clone, Default)]
-pub struct XServerConfig {
-    pub enable: bool,
-    pub layout: &'static str,
-    pub gnome_enable: bool,
+pub struct XServer {
+    pub enabled: bool,
+    pub window_manager: &'static str,
 }
 
-pub fn build(config: XServerConfig) -> Module {
-    let mut builder = ModuleBuilder::new().set_enable_fn(move |s: &mut State| {
-        log::info!("Enabling XServer with layout: '{}'", config.layout);
-        s.enabled = true;
-    });
-
-    if config.gnome_enable {
-        let gnome_submodule = ModuleBuilder::new()
-            .set_enable_fn(|_| {
-                log::info!("-> Enabling Gnome Desktop...");
-            })
-            .build();
-        builder = builder.add_submodule(gnome_submodule);
+impl Default for XServer {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            window_manager: "",
+        }
     }
+}
 
-    builder.build()
+impl Funcs for XServer {
+    fn name(&self) -> &'static str {
+        "xserver"
+    }
+    fn enable(&self) {
+        log::debug!("XServer enabled");
+    }
+    fn disable(&self) {
+        log::debug!("XServer disabled");
+    }
+    fn is_enabled(&self) -> bool {
+        self.enabled
+    }
 }

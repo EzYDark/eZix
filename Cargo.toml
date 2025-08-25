@@ -8,3 +8,4 @@ anyhow = "1.0.99"
 env_logger = "0.11.8"
 log = "0.4.27"
 time = { version = "0.3.41", features = ["local-offset"] }
+ezlog = { git = "https://github.com/EzYDark/ezLog-rs.git" }
