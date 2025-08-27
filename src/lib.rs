@@ -24,6 +24,11 @@ impl<'a> SystemConfig<'a> {
         self
     }
 
+    pub fn combine(mut self, other: SystemConfig<'a>) -> Self {
+        self.modules.extend(other.modules);
+        self
+    }
+
     pub fn apply(&self) {
         let all_modules = modules::all_modules();
         let declared_modules: HashMap<&str, &Box<dyn Funcs + 'a>> =
