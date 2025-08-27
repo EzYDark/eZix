@@ -24,7 +24,7 @@ impl<'a> SystemConfig<'a> {
         self
     }
 
-    pub fn combine(mut self, other: SystemConfig<'a>) -> Self {
+    pub fn extend(mut self, other: SystemConfig<'a>) -> Self {
         self.modules.extend(other.modules);
         self
     }

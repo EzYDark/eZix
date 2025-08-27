@@ -18,12 +18,12 @@ fn main() {
     });
 
     let sys_config = SystemConfig::new()
-        .combine(base_config2)
+        .extend(base_config2)
         .with(XServer {
             enabled: true,
             window_manager: "i3",
         })
-        .combine(base_config);
+        .extend(base_config);
 
     sys_config.apply();
 }
