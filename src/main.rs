@@ -1,6 +1,5 @@
 use ezix::SystemConfig;
 use ezix::modules::xserver::XServer;
-use ezix::modules::zen_browser::ZenBrowser;
 
 fn main() {
     ezlog::logger::init();
@@ -10,12 +9,10 @@ fn main() {
     //     ports: vec![22, 80, 443],
     // });
 
-    let sys_config = SystemConfig::new()
-        .with(XServer {
-            enabled: true,
-            window_manager: "i3",
-        })
-        .with(ZenBrowser { enabled: true });
+    let sys_config = SystemConfig::new().with(XServer {
+        enabled: true,
+        window_manager: "i3",
+    });
     // .extend(base_config);
 
     let _ = sys_config.apply();
