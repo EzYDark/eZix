@@ -9,3 +9,9 @@ env_logger = "0.11.8"
 log = "0.4.27"
 time = { version = "0.3.41", features = ["local-offset"] }
 ezlog = { git = "https://github.com/EzYDark/ezLog-rs.git" }
+winreg = "0.55.0"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.143"
+
+[build-dependencies]
+winres = "0.1.12"

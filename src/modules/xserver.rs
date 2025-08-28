@@ -15,14 +15,16 @@ impl Default for XServer {
 }
 
 impl Funcs for XServer {
-    fn name(&self) -> &'static str {
+    fn id(&self) -> &'static str {
         "xserver"
     }
-    fn enable(&self) {
+    fn enable(&self) -> Result<(), anyhow::Error> {
         log::debug!("XServer enabled");
+        Ok(())
     }
-    fn disable(&self) {
+    fn disable(&self) -> Result<(), anyhow::Error> {
         log::debug!("XServer disabled");
+        Ok(())
     }
     fn is_enabled(&self) -> bool {
         self.enabled

@@ -15,14 +15,16 @@ impl Default for Firewall {
 }
 
 impl Funcs for Firewall {
-    fn name(&self) -> &'static str {
+    fn id(&self) -> &'static str {
         "firewall"
     }
-    fn enable(&self) {
+    fn enable(&self) -> Result<(), anyhow::Error> {
         log::debug!("Firewall enabled");
+        Ok(())
     }
-    fn disable(&self) {
+    fn disable(&self) -> Result<(), anyhow::Error> {
         log::debug!("Firewall disabled");
+        Ok(())
     }
     fn is_enabled(&self) -> bool {
         self.enabled

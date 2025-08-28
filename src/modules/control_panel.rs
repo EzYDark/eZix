@@ -11,14 +11,16 @@ impl Default for ControlPanel {
 }
 
 impl Funcs for ControlPanel {
-    fn name(&self) -> &'static str {
+    fn id(&self) -> &'static str {
         "control_panel"
     }
-    fn enable(&self) {
+    fn enable(&self) -> Result<(), anyhow::Error> {
         log::debug!("Control panel enabled");
+        Ok(())
     }
-    fn disable(&self) {
+    fn disable(&self) -> Result<(), anyhow::Error> {
         log::debug!("Control panel disabled");
+        Ok(())
     }
     fn is_enabled(&self) -> bool {
         self.enabled
