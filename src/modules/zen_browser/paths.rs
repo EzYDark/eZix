@@ -1,4 +1,5 @@
 #[cfg(windows)]
+#[allow(dead_code)]
 pub const ZEN_BROWSER_PATH: &str = r"C:\Program Files\Zen Browser";
 #[cfg(windows)]
 pub const POLICY_PATH: &str = r"C:\Program Files\Zen Browser\distribution\policies.json";
