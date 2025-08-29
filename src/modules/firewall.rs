@@ -1,17 +1,15 @@
+// Example module
+
 use crate::Funcs;
 
+#[derive(Default)]
 pub struct Firewall {
     pub enabled: bool,
-    pub ports: Vec<u16>,
-}
+    pub install: bool,
+    pub package: &'static str,
+    pub sandbox: bool,
 
-impl Default for Firewall {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            ports: Vec::new(),
-        }
-    }
+    pub ports: Vec<u16>,
 }
 
 impl Funcs for Firewall {

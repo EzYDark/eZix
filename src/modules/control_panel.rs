@@ -1,13 +1,13 @@
+// Example module
+
 use crate::Funcs;
 
+#[derive(Default)]
 pub struct ControlPanel {
     pub enabled: bool,
-}
-
-impl Default for ControlPanel {
-    fn default() -> Self {
-        Self { enabled: false }
-    }
+    pub install: bool,
+    pub package: &'static str,
+    pub sandbox: bool,
 }
 
 impl Funcs for ControlPanel {

@@ -1,5 +1,5 @@
 use ezix::SystemConfig;
-use ezix::modules::xserver::XServer;
+use ezix::modules::firewall::Firewall;
 
 fn main() {
     ezlog::logger::init();
@@ -9,11 +9,15 @@ fn main() {
     //     ports: vec![22, 80, 443],
     // });
 
-    let sys_config = SystemConfig::new().with(XServer {
+    let sys_config = SystemConfig::new().with(Firewall {
         enabled: true,
-        window_manager: "i3",
+        ports: vec![22, 80, 443],
+        ..Default::default()
     });
     // .extend(base_config);
 
-    let _ = sys_config.apply();
+    match sys_config.apply() {
+        Ok(_) => log::info!("System configuration applied successfully"),
+        Err(e) => log::error!("Failed to apply system configuration:\n - {}", e),
+    }
 }
