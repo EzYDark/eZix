@@ -1,6 +1,7 @@
 // Example module
 
 use crate::Funcs;
+use anyhow::Result;
 
 #[derive(Default)]
 pub struct ControlPanel {
@@ -14,11 +15,11 @@ impl Funcs for ControlPanel {
     fn id(&self) -> &'static str {
         "Control Panel"
     }
-    fn enable(&self) -> Result<(), anyhow::Error> {
+    fn enable(&self) -> Result<()> {
         log::debug!("Enabling 'Control Panel' module...");
         Ok(())
     }
-    fn disable(&self) -> Result<(), anyhow::Error> {
+    fn disable(&self) -> Result<()> {
         log::debug!("Disabling 'Control Panel' module...");
         Ok(())
     }

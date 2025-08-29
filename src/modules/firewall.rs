@@ -1,6 +1,7 @@
 // Example module
 
 use crate::Funcs;
+use anyhow::Result;
 
 #[derive(Default)]
 pub struct Firewall {
@@ -16,11 +17,11 @@ impl Funcs for Firewall {
     fn id(&self) -> &'static str {
         "Firewall"
     }
-    fn enable(&self) -> Result<(), anyhow::Error> {
+    fn enable(&self) -> Result<()> {
         log::debug!("Enabling 'Firewall' module...");
         Ok(())
     }
-    fn disable(&self) -> Result<(), anyhow::Error> {
+    fn disable(&self) -> Result<()> {
         log::debug!("Disabling 'Firewall' module...");
         Ok(())
     }

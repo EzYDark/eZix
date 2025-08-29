@@ -56,92 +56,44 @@ impl Funcs for ZenBrowser {
     fn enable(&self) -> Result<()> {
         log::debug!("Enabling 'Zen Browser' module...");
 
-        if let Err(e) = util::ensure_parent_dir(paths::POLICY_PATH) {
-            return Err(anyhow::anyhow!(
-                "Failed to create parent directory for 'policies.json':\n - {}",
-                e
-            ));
-        }
-        if let Err(e) = util::ensure_parent_dir(paths::AUTOCONFIG_JS) {
-            return Err(anyhow::anyhow!(
-                "Failed to create parent directory for 'autoconfig.js':\n - {}",
-                e
-            ));
-        }
-        if let Err(e) = util::ensure_parent_dir(paths::MOZILLA_CFG) {
-            return Err(anyhow::anyhow!(
-                "Failed to create parent directory for 'mozilla.cfg':\n - {}",
-                e
-            ));
-        }
+        // Ensure parent dirs exist (util functions already add context)
+        util::ensure_parent_dir(paths::POLICY_PATH)?;
+        util::ensure_parent_dir(paths::AUTOCONFIG_JS)?;
+        util::ensure_parent_dir(paths::MOZILLA_CFG)?;
 
         // 1) policies.json
         let policies_value = policies_to_json(&self.policies);
-        match serde_json::to_string_pretty(&policies_value) {
-            Ok(policies_pretty) => match fs::write(paths::POLICY_PATH, policies_pretty) {
-                Ok(_) => log::debug!("'policies.json' written to '{}'", paths::POLICY_PATH),
-                Err(e) => {
-                    return Err(anyhow::anyhow!(
-                        "Failed to write 'policies.json':\n - {}",
-                        e
-                    ));
-                }
-            },
-            Err(e) => {
-                return Err(anyhow::anyhow!(
-                    "Failed to serialize into 'policies.json':\n - {}",
-                    e
-                ));
-            }
-        }
+        let policies_pretty =
+            serde_json::to_string_pretty(&policies_value).context("serialize policies JSON")?;
+        fs::write(paths::POLICY_PATH, policies_pretty)
+            .with_context(|| format!("write '{}'", paths::POLICY_PATH))?;
+        log::debug!("'policies.json' written to '{}'", paths::POLICY_PATH);
 
         // 2) autoconfig.js
         let autoconfig = util::render_autoconfig_js();
-        match fs::write(paths::AUTOCONFIG_JS, autoconfig) {
-            Ok(_) => log::debug!("'autoconfig.js' written to '{}'", paths::AUTOCONFIG_JS),
-            Err(e) => {
-                return Err(anyhow::anyhow!(
-                    "Failed to write 'autoconfig.js':\n - {}",
-                    e
-                ));
-            }
-        }
+        fs::write(paths::AUTOCONFIG_JS, autoconfig)
+            .with_context(|| format!("write '{}'", paths::AUTOCONFIG_JS))?;
+        log::debug!("'autoconfig.js' written to '{}'", paths::AUTOCONFIG_JS);
 
         // 3) mozilla.cfg
         let cfg = render_cfg_from_prefs(&self.prefs);
-        match fs::write(paths::MOZILLA_CFG, cfg) {
-            Ok(_) => log::debug!("'mozilla.cfg' written to '{}'", paths::MOZILLA_CFG),
-            Err(e) => {
-                return Err(anyhow::anyhow!("Failed to write 'mozilla.cfg':\n - {}", e));
-            }
-        }
+        fs::write(paths::MOZILLA_CFG, cfg)
+            .with_context(|| format!("write '{}'", paths::MOZILLA_CFG))?;
+        log::debug!("'mozilla.cfg' written to '{}'", paths::MOZILLA_CFG);
 
         Ok(())
     }
 
     fn disable(&self) -> Result<()> {
-        match util::remove_file_silent(paths::POLICY_PATH) {
-            Ok(_) => log::debug!("'policies.json' removed from '{}'", paths::POLICY_PATH),
-            Err(e) => {
-                return Err(anyhow::anyhow!(
-                    "Failed to remove 'policies.json':\n - {}",
-                    e
-                ));
-            }
-        }
-        match util::remove_file_silent(paths::AUTOCONFIG_JS) {
-            Ok(_) => log::debug!("'autoconfig.js' removed from '{}'", paths::AUTOCONFIG_JS),
-            Err(e) => {
-                return Err(anyhow::anyhow!(
-                    "Failed to remove 'autoconfig.js':\n - {}",
-                    e
-                ));
-            }
-        }
-        match util::remove_file_silent(paths::MOZILLA_CFG) {
-            Ok(_) => log::debug!("'mozilla.cfg' removed from '{}'", paths::MOZILLA_CFG),
-            Err(e) => return Err(anyhow::anyhow!("Failed to remove 'mozilla.cfg':\n - {}", e)),
-        }
+        util::remove_file_silent(paths::POLICY_PATH)?;
+        log::debug!("'policies.json' removed from '{}'", paths::POLICY_PATH);
+
+        util::remove_file_silent(paths::AUTOCONFIG_JS)?;
+        log::debug!("'autoconfig.js' removed from '{}'", paths::AUTOCONFIG_JS);
+
+        util::remove_file_silent(paths::MOZILLA_CFG)?;
+        log::debug!("'mozilla.cfg' removed from '{}'", paths::MOZILLA_CFG);
+
         log::debug!("Zen Browser configuration removed");
         Ok(())
     }

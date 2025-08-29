@@ -1,5 +1,5 @@
 pub mod modules;
-use anyhow::{Result, anyhow};
+use anyhow::{Context, Result};
 use std::collections::HashMap;
 
 pub trait Funcs {
@@ -15,7 +15,7 @@ pub struct SystemConfig<'a> {
 
 impl<'a> SystemConfig<'a> {
     pub fn new() -> Self {
-        SystemConfig {
+        Self {
             modules: Vec::new(),
         }
     }
@@ -32,45 +32,32 @@ impl<'a> SystemConfig<'a> {
 
     pub fn apply(&self) -> Result<()> {
         let all_modules = modules::all_modules();
-        let declared_modules: HashMap<&str, &Box<dyn Funcs + 'a>> =
+        let declared: HashMap<&str, &Box<dyn Funcs + 'a>> =
             self.modules.iter().map(|m| (m.id(), m)).collect();
 
-        for module in all_modules {
-            if let Some(declared_module) = declared_modules.get(module.id()) {
-                if declared_module.is_enabled() {
-                    match declared_module.enable() {
-                        Ok(_) => log::debug!("'{}' module enabled successfully", module.id()),
-                        Err(e) => {
-                            return Err(anyhow!(
-                                "Failed to enable '{}' module:\n - {}",
-                                module.id(),
-                                e
-                            ));
-                        }
-                    }
+        for default_mod in all_modules {
+            let id = default_mod.id();
+
+            if let Some(cfg_mod) = declared.get(id) {
+                if cfg_mod.is_enabled() {
+                    log::info!("Enabling module '{}'", id);
+                    cfg_mod
+                        .enable()
+                        .with_context(|| format!("enable '{}'", id))?;
+                    log::debug!("'{}' module enabled", id);
                 } else {
-                    match declared_module.disable() {
-                        Ok(_) => log::debug!("'{}' module disabled successfully", module.id()),
-                        Err(e) => {
-                            return Err(anyhow!(
-                                "Failed to disable '{}' module:\n - {}",
-                                module.id(),
-                                e
-                            ));
-                        }
-                    };
+                    log::info!("Disabling module '{}'", id);
+                    cfg_mod
+                        .disable()
+                        .with_context(|| format!("disable '{}'", id))?;
+                    log::debug!("'{}' module disabled", id);
                 }
             } else {
-                match module.disable() {
-                    Ok(_) => log::debug!("'{}' module disabled successfully", module.id()),
-                    Err(e) => {
-                        return Err(anyhow!(
-                            "Failed to disable '{}' module:\n - {}",
-                            module.id(),
-                            e
-                        ));
-                    }
-                };
+                log::info!("Disabling undeclared module '{}'", id);
+                default_mod
+                    .disable()
+                    .with_context(|| format!("disable undeclared '{}'", id))?;
+                log::debug!("'{}' module disabled (undeclared)", id);
             }
         }
         Ok(())
@@ -79,7 +66,7 @@ impl<'a> SystemConfig<'a> {
 
 #[macro_export]
 macro_rules! ezix {
-    ($($module:expr),*) => {
+    ($($module:expr),* $(,)?) => {
         $crate::SystemConfig::new()
             $(.with($module))*
     };
