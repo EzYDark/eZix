@@ -13,16 +13,9 @@ fn main() {
         })
         .with(ZenBrowser {
             enabled: true,
-            policies: Policies {
-                disable_app_update: Some(true),
-                background_app_update: Some(false),
-                dont_check_default_browser: Some(true),
-                no_default_bookmarks: Some(true),
-                extra: serde_json::Map::new(),
-            },
             prefs: Prefs {
-                browser_startup_homepage: Some("https://example.org"),
-                browser_startup_page: Some(3),
+                restore_prev_session: Some(true),
+                continue_where_you_left_off: Some(true),
                 extra: vec![("privacy.donottrackheader.enabled", PrefValue::Bool(true))],
                 ..Default::default()
             },
