@@ -14,14 +14,14 @@ pub struct Firewall {
 
 impl Funcs for Firewall {
     fn id(&self) -> &'static str {
-        "firewall"
+        "Firewall"
     }
     fn enable(&self) -> Result<(), anyhow::Error> {
-        log::debug!("Firewall enabled");
+        log::debug!("Enabling 'Firewall' module...");
         Ok(())
     }
     fn disable(&self) -> Result<(), anyhow::Error> {
-        log::debug!("Firewall disabled");
+        log::debug!("Disabling 'Firewall' module...");
         Ok(())
     }
     fn is_enabled(&self) -> bool {

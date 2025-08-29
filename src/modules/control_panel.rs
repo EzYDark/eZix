@@ -12,14 +12,14 @@ pub struct ControlPanel {
 
 impl Funcs for ControlPanel {
     fn id(&self) -> &'static str {
-        "control_panel"
+        "Control Panel"
     }
     fn enable(&self) -> Result<(), anyhow::Error> {
-        log::debug!("Control panel enabled");
+        log::debug!("Enabling 'Control Panel' module...");
         Ok(())
     }
     fn disable(&self) -> Result<(), anyhow::Error> {
-        log::debug!("Control panel disabled");
+        log::debug!("Disabling 'Control Panel' module...");
         Ok(())
     }
     fn is_enabled(&self) -> bool {
